@@ -175,7 +175,7 @@ export default function HeroSection() {
                         <span>SETUP OPENCLAW</span>
                         <span className="text-lg">→</span>
                     </a>
-                    <a href="https://www.maxxit.ai/docs#openclaw" target="_blank" className="px-8 py-3.5 rounded-full border border-[var(--color-border)] hover:border-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.02)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] font-mono text-xs tracking-wider">
+                    <a href="https://www.maxxit.ai/user-manual" target="_blank" className="px-8 py-3.5 rounded-full border border-[var(--color-border)] hover:border-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.02)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] font-mono text-xs tracking-wider">
                         VIEW DOCUMENTATION
                     </a>
                 </div>

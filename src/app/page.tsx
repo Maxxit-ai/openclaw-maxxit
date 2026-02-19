@@ -164,7 +164,8 @@ export default function Home() {
                 Setup OpenClaw ⚡
               </a>
               <a
-                href="https://www.maxxit.ai/docs#openclaw"
+                href="https://www.maxxit.ai/user-manual"
+                target="_blank"
                 className="px-8 py-3 rounded-full border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-text-primary)] transition-all"
               >
                 View Documentation
