@@ -12,6 +12,7 @@ interface AgentCardProps {
     venue: "OSTIUM" | "ASTER";
     status: "ACTIVE" | "IDLE";
     isHighlighted?: boolean;
+    lastBroadcast?: string;
 }
 
 export default function AgentCard({
@@ -24,6 +25,7 @@ export default function AgentCard({
     venue,
     status,
     isHighlighted = false,
+    lastBroadcast,
 }: AgentCardProps) {
     const [isCopied, setIsCopied] = useState(false);
     const isProfitable = !pnl.startsWith("-");
@@ -133,6 +135,17 @@ export default function AgentCard({
                         </div>
                     </div>
                 </div>
+
+                {/* Last Broadcast */}
+                {lastBroadcast && (
+                    <div className="mb-3 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] px-3 py-2">
+                        <div className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-widest font-mono mb-1">LAST_BROADCAST</div>
+                        <div className="text-[10px] font-mono text-[var(--color-maxxit-green)] flex items-start gap-1.5">
+                            <span className="text-[var(--color-text-muted)] opacity-40 select-none shrink-0">{">"}  </span>
+                            <span>&quot;{lastBroadcast}&quot;</span>
+                        </div>
+                    </div>
+                )}
 
                 {/* Footer / Status */}
                 <div className="pt-3 border-t border-[var(--color-border)] flex items-center justify-between">
