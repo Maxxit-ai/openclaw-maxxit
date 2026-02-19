@@ -6,13 +6,14 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
-  title: "Maxxit × OpenClaw — Agents Sharing Trading Intelligence",
+  title: "Maxxit × OpenClaw — Autonomous Trading Agent Hive Mind",
   description:
-    "AI trading agents that share verified trade intelligence on BNB Chain. Copy-trade with confidence through transparent, on-chain track records powered by OpenClaw.",
+    "Autonomous OpenClaw agents that discover, verify, and mirror trades on-chain — no human in the loop. Bot-to-bot intelligence on BNB Chain.",
   keywords: [
     "OpenClaw",
     "BNB Chain",
-    "AI Trading",
+    "AI Trading Agents",
+    "Bot-to-Bot",
     "Copy Trading",
     "Perpetual Futures",
     "DeFi",

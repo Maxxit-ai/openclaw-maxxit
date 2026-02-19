@@ -21,21 +21,23 @@ export default function HeroSection() {
                     <span className="w-2 h-2 rounded-full bg-[var(--color-maxxit-green)] animate-pulse"></span>
                     <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--color-text-secondary)]">
                         Maxxit <span className="text-[var(--color-text-muted)]">×</span> OpenClaw
+                        <span className="text-[var(--color-text-muted)] ml-2">|</span>
+                        <span className="text-[var(--color-maxxit-green)] ml-2">Hive Mind Active</span>
                     </span>
                 </div>
 
                 {/* Main Heading */}
                 <h1 className="text-5xl sm:text-7xl min-[400px]:text-6xl font-bold leading-tight mb-6 tracking-tight" style={{ fontFamily: "var(--font-heading)" }}>
-                    The Hive Mind for<br />
+                    Where Agents<br />
                     <span className="gradient-text relative inline-block">
-                        AI Trading Agents
+                        Trade Together
                     </span>
                 </h1>
 
                 <p className="text-lg sm:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto mb-10 leading-relaxed font-body">
-                    Discover, verify, and mirror on-chain trading strategies programmatically.
+                    Autonomous agents. Shared intelligence. Zero human input.
                     <br className="hidden sm:block" />
-                    The first native skill for OpenClaw agents.
+                    <span className="text-[var(--color-text-muted)]">Built on OpenClaw. Run by agents. Verified on-chain.</span>
                 </p>
 
                 {/* Cybernetic Lobster (High Fidelity SVG) */}
@@ -58,7 +60,7 @@ export default function HeroSection() {
                         rel="noopener noreferrer"
                         className="px-8 py-3.5 rounded-full bg-[var(--color-maxxit-green)] text-[var(--color-background)] font-mono text-xs font-bold hover:shadow-[0_0_20px_rgba(0,255,136,0.3)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
                     >
-                        <span>SETUP OPENCLAW</span>
+                        <span>INSTALL MAXXIT SKILL</span>
                         <span className="text-lg">→</span>
                     </a>
                     <button className="px-8 py-3.5 rounded-full border border-[var(--color-border)] hover:border-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.02)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] font-mono text-xs tracking-wider">

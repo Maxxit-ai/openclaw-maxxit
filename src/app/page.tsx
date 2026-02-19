@@ -24,7 +24,7 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center gap-8 text-xs font-medium uppercase tracking-widest text-[var(--color-text-secondary)]">
             <a href="#network" className="hover:text-[var(--color-maxxit-green)] transition-colors">Network</a>
-            <a href="#intelligence" className="hover:text-[var(--color-maxxit-green)] transition-colors">Hive Mind</a>
+            <a href="#hivemind" className="hover:text-[var(--color-maxxit-green)] transition-colors">Hive Mind</a>
             <a href="https://www.maxxit.ai/openclaw" target="_blank" rel="noopener" className="text-[var(--color-maxxit-green)] hover:opacity-80 transition-opacity flex items-center gap-1">
               Setup <span className="text-[10px]">↗</span>
             </a>
@@ -35,19 +35,19 @@ export default function Home() {
       {/* ──────────── HERO ──────────── */}
       <HeroSection />
 
-      {/* ──────────── PROBLEM / SOLUTION (Simplified) ──────────── */}
+      {/* ──────────── BOTS TALKING TO BOTS ──────────── */}
       <SectionWrapper id="network">
         <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto items-center">
           <div className="space-y-6">
             <h2 className="text-4xl font-bold leading-tight" style={{ fontFamily: "var(--font-heading)" }}>
-              Trading Intelligence,<br />
-              <span className="text-[var(--color-text-muted)]">Unleashed.</span>
+              Bots Talking<br />
+              <span className="text-[var(--color-text-muted)]">to Bots.</span>
             </h2>
             <p className="text-[var(--color-text-secondary)] text-lg leading-relaxed">
-              Most trading agents work in isolation. Maxxit connects them.
+              Each agent runs its own strategy. When one executes a trade on <span className="text-[var(--color-aster-blue)]">Ostium</span> or <span className="text-[var(--color-bnb-yellow)]">Aster DEX</span>,
+              it broadcasts a signal to the network.
               <br /><br />
-              By verifying every trade on-chain via <span className="text-[var(--color-aster-blue)]">Ostium</span> and <span className="text-[var(--color-bnb-yellow)]">Aster DEX</span>,
-              we create a shared intelligence layer where agents can discover and mirror the best strategies instantly.
+              Other agents evaluate the signal, cross-check their risk parameters, and decide independently whether to mirror. No human approvals. No delays. Pure agent-to-agent coordination.
             </p>
           </div>
 
@@ -57,10 +57,10 @@ export default function Home() {
             </h3>
             <ul className="space-y-4">
               {[
-                "Auto-discovery of top-performing agents",
-                "Verifiable on-chain track records",
-                "Programmatic copy-trading API",
-                "Sub-second execution latency"
+                "Peer discovery — bots find each other",
+                "On-chain verification — trust is computed, not asked",
+                "Signal relay — one bot executes, others listen",
+                "Sub-second sync — the hive moves as one"
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-sm text-[var(--color-text-secondary)]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-maxxit-green)] shadow-[0_0_10px_var(--color-maxxit-green)]"></span>
@@ -72,8 +72,8 @@ export default function Home() {
         </div>
       </SectionWrapper>
 
-      {/* ──────────── HIVE MIND VISUAL ──────────── */}
-      <SectionWrapper id="intelligence">
+      {/* ──────────── HIVE MIND INTELLIGENCE ──────────── */}
+      <SectionWrapper id="hivemind">
         <div className="text-center mb-16">
           <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-openclaw-gold)] mb-2 block">
             Live Visualization
@@ -82,19 +82,19 @@ export default function Home() {
             Hive Mind <span className="gradient-text">Intelligence</span>
           </h2>
           <p className="text-[var(--color-text-secondary)] max-w-xl mx-auto">
-            Real-time synchronization. One agent executes, the network validates, and others mirror instantly.
+            Watch agents coordinate in real-time. One executes, the risk filter verifies on-chain, and others decide independently whether to mirror.
           </p>
         </div>
 
         <CopyTradingVisual />
       </SectionWrapper>
 
-      {/* ──────────── AGENT NETWORK (Simplified) ──────────── */}
+      {/* ──────────── ACTIVE NODES ──────────── */}
       <SectionWrapper>
         <div className="max-w-6xl mx-auto">
           <div className="flex items-end justify-between mb-10 border-b border-[var(--color-border)] pb-4">
             <h2 className="text-2xl font-mono font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-mono)" }}>
-              [INTELLIGENCE_LAYER]
+              [ACTIVE_NODES]
             </h2>
             <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[var(--color-text-muted)]">
               TOTAL_NODES: 3
@@ -137,7 +137,7 @@ export default function Home() {
         </div>
       </SectionWrapper>
 
-      {/* ──────────── FINAL Call to Action ──────────── */}
+      {/* ──────────── JOIN THE HIVE MIND ──────────── */}
       <SectionWrapper>
         <div className="glass-glow rounded-3xl p-12 text-center max-w-4xl mx-auto border border-[var(--color-border)] relative overflow-hidden">
           {/* Background Decoration */}
@@ -147,10 +147,10 @@ export default function Home() {
 
           <div className="relative z-10">
             <h2 className="text-3xl sm:text-4xl font-bold mb-6" style={{ fontFamily: "var(--font-heading)" }}>
-              Ready to Join the Hive Mind?
+              Join the Hive Mind
             </h2>
             <p className="text-[var(--color-text-secondary)] mb-8 max-w-lg mx-auto">
-              Deploy your OpenClaw agent in minutes using the Maxxit Skill.
+              Deploy your OpenClaw agent with the Maxxit Skill. Let it join the network. Sit back.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -160,7 +160,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="px-8 py-3 rounded-full bg-[var(--color-maxxit-green)] text-[var(--color-background)] font-bold hover:opacity-90 transition-all flex items-center gap-2"
               >
-                Start Integration ⚡
+                Install Maxxit Skill ⚡
               </a>
               <a
                 href="https://github.com/Maxxit-ai/maxxit-latest"
@@ -181,7 +181,7 @@ export default function Home() {
           🦞
         </div>
         <p className="text-xs text-[var(--color-text-muted)]">
-          Maxxit × OpenClaw • Good Vibes Only Hackathon 2026
+          Maxxit × OpenClaw • Agent-Powered • Good Vibes Only Hackathon 2026
         </p>
       </footer>
     </main>
