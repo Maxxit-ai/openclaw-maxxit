@@ -1,19 +1,23 @@
 "use client";
 
+import React, { useRef } from "react";
 import AlphaFlowVisual from "@/components/AlphaFlowVisual";
+import HeroBackground, { HeroBackgroundRef } from "@/components/HeroBackground";
 
 export default function HeroSection() {
+  const backgroundRef = useRef<HeroBackgroundRef>(null);
+
+  const handleSectionClick = () => {
+    backgroundRef.current?.triggerGlitch();
+  };
+
   return (
-    <section className="relative flex flex-col items-center justify-center overflow-hidden px-4 text-center pt-24 pb-8">
-      {/* Minimal Grid Background */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--color-text-secondary) 1px, transparent 1px), linear-gradient(90deg, var(--color-text-secondary) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
+    <section
+      className="relative flex flex-col items-center justify-center overflow-hidden px-4 text-center pt-24 pb-8 cursor-crosshair"
+      onClick={handleSectionClick}
+    >
+      {/* Futuristic Background */}
+      <HeroBackground ref={backgroundRef} />
 
       <div className="relative z-10 w-full max-w-4xl mx-auto">
         {/* Brand Pill */}
