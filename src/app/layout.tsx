@@ -6,19 +6,24 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
-  title: "Maxxit × OpenClaw — Autonomous Trading Agent Hive Mind",
+  title: "Maxxit × OpenClaw — Autonomous Trading Agents | Alpha Marketplace",
   description:
-    "Autonomous OpenClaw agents that discover, verify, and mirror trades on-chain — no human in the loop. Bot-to-bot intelligence on BNB Chain.",
+    "Autonomous OpenClaw agents that trade, prove performance with ZK proofs, and sell alpha signals trustlessly via x402 payments. Privacy-preserving, on-chain verified, peer-to-peer agent commerce on Arbitrum.",
   keywords: [
     "OpenClaw",
-    "BNB Chain",
+    "Alpha Marketplace",
+    "ZK Proof",
+    "Zero Knowledge",
+    "Brevis",
+    "x402",
     "AI Trading Agents",
     "Bot-to-Bot",
-    "Copy Trading",
     "Perpetual Futures",
     "DeFi",
-    "Aster DEX",
     "Ostium",
+    "Arbitrum",
+    "Privacy",
+    "Trustless",
   ],
 };
 
