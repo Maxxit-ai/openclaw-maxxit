@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import LobsterSVG from "./LobsterSVG";
+import LobsterSVG from "@/components/icons/LobsterSVG";
 
 /* ── 1 Producer + 4 Consumers — ZK verification is distributed across all consumers ── */
 const NODES = [
@@ -64,8 +64,42 @@ export default function CopyTradingVisual() {
   const [pings, setPings] = useState<{ id: number; from: number; to: number; type: "data" | "energy" }[]>([]);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [outcomeText, setOutcomeText] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   const cancelledRef = useRef(false);
   const nextIdRef = useRef(0);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile, { passive: true });
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
+  }, [chatMessages]);
+
+  const getLayoutCoords = useCallback((nodeId: number) => {
+    const node = NODES.find((n) => n.id === nodeId)!;
+    if (!isMobile) return { x: node.x, y: node.y };
+
+    // Mobile layout: Vertical Zig-Zag with increased spacing
+    switch (nodeId) {
+      case 1: return { x: 50, y: 15 }; // Top center (pushed down)
+      case 2: return { x: 20, y: 34 }; // Left
+      case 5: return { x: 72, y: 45 }; // Right
+      case 3: return { x: 18, y: 65 }; // Left
+      case 4: return { x: 75, y: 75 }; // Right
+      default: return { x: node.x, y: node.y };
+    }
+  }, [isMobile]);
 
   const getNextId = () => {
     nextIdRef.current += 1;
@@ -79,7 +113,7 @@ export default function CopyTradingVisual() {
   const addChatMessage = useCallback(
     (msg: Omit<ChatMessage, "id" | "timestamp">) => {
       setChatMessages((prev) => [
-        ...prev.slice(-9),
+        ...prev.slice(-29),
         { ...msg, id: getNextId(), timestamp: Date.now() },
       ]);
     },
@@ -135,9 +169,9 @@ export default function CopyTradingVisual() {
         // Step 2: Verification
         setNodeStates((prev) => {
           const next = { ...prev };
-          next[1].activeConn = [];
+          if (next[1]) next[1].activeConn = [];
           CONSUMER_IDS.forEach((id) => {
-            next[id] = { state: "processing", label: `ZK_COMPUTE: ${scenario.zkSummary}` };
+            next[id] = { state: "processing", label: isMobile ? `ZK_VERIFY: ${scenario.zkSummary.split(' · ')[0]}` : `ZK_COMPUTE: ${scenario.zkSummary}` };
           });
           return next;
         });
@@ -151,7 +185,11 @@ export default function CopyTradingVisual() {
 
           setNodeStates((prev) => ({
             ...prev,
-            [consumerId]: { state: isBuy ? "active" : "rejected", label: reaction.label, activeConn: isBuy ? [1] : [] },
+            [consumerId]: {
+              state: isBuy ? "active" : "rejected",
+              label: isMobile ? (reaction.label.split(' → ')[1] || reaction.label).split('_').pop() || reaction.label : reaction.label,
+              activeConn: isBuy ? [1] : []
+            },
           }));
 
           if (isBuy) {
@@ -184,31 +222,30 @@ export default function CopyTradingVisual() {
 
     runLoop();
     return () => { cancelledRef.current = true; };
-  }, [getNodeName, addChatMessage]);
+  }, [getNodeName, addChatMessage, isMobile]);
 
   return (
     <div className="w-full max-w-6xl mx-auto group/mesh">
-      <div className="relative w-full h-[650px] rounded-t-3xl overflow-hidden border border-[var(--color-border)] bg-[#0c0c0a] cursor-default scanlines">
+      <div className="relative w-full h-[700px] sm:h-[650px] rounded-t-3xl overflow-hidden border border-[var(--color-border)] bg-[#0c0c0a] cursor-default scanlines transition-all duration-500">
         {/* Terminal Header */}
-        <div className="absolute top-0 left-0 right-0 h-12 border-b border-[var(--color-border)] bg-[var(--color-surface)] z-40 flex items-center justify-between px-6">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
+        <div className="absolute top-0 left-0 right-0 h-10 sm:h-12 border-b border-[var(--color-border)] bg-[var(--color-surface)] z-50 flex items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3 sm:gap-6">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-maxxit-green)] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-maxxit-green)]"></span>
               </div>
-              <span className="text-[10px] font-mono font-bold text-[var(--color-maxxit-green)] tracking-[0.2em]">MESH_INTELLIGENCE_LINK</span>
+              <span className="text-[8px] sm:text-[10px] font-mono font-bold text-[var(--color-maxxit-green)] tracking-widest whitespace-nowrap">MESH_LINK</span>
             </div>
-            <div className="hidden md:flex items-center gap-3 text-[9px] font-mono text-[var(--color-text-muted)] tracking-widest uppercase opacity-60">
-              <span className="px-2 py-0.5 border border-white/10 rounded">RT_LATENCY: 12ms</span>
-              <span className="px-2 py-0.5 border border-white/10 rounded">ENCRYPTION: ZK_EVM_PROOF</span>
+            <div className="hidden sm:flex items-center gap-3 text-[9px] font-mono text-[var(--color-text-muted)] tracking-widest uppercase opacity-60">
+              <span className="px-2 py-0.5 border border-white/10 rounded">RT: 12ms</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-1.5 w-24 bg-white/5 rounded-full overflow-hidden">
+            <div className="h-1 w-16 sm:h-1.5 sm:w-24 bg-white/5 rounded-full overflow-hidden">
               <div className="h-full bg-[var(--color-maxxit-green)] w-1/3 animate-[loading-bar_3s_infinite]" />
             </div>
-            <span className="text-[8px] font-mono text-white/20">SYS_V0.8</span>
+            <span className="text-[7px] sm:text-[8px] font-mono text-white/20">V0.8</span>
           </div>
         </div>
 
@@ -225,8 +262,8 @@ export default function CopyTradingVisual() {
           </defs>
 
           {CONNECTIONS.map(([a, b], i) => {
-            const nodeA = NODES.find((n) => n.id === a)!;
-            const nodeB = NODES.find((n) => n.id === b)!;
+            const nodeA = getLayoutCoords(a);
+            const nodeB = getLayoutCoords(b);
             const isActive = nodeStates[a]?.activeConn?.includes(b) || nodeStates[b]?.activeConn?.includes(a);
 
             return (
@@ -234,17 +271,17 @@ export default function CopyTradingVisual() {
                 <line
                   x1={nodeA.x} y1={nodeA.y} x2={nodeB.x} y2={nodeB.y}
                   stroke={isActive ? "var(--color-maxxit-green)" : "var(--color-border)"}
-                  strokeWidth={isActive ? "0.4" : "0.1"}
-                  opacity={isActive ? "0.6" : "0.2"}
+                  strokeWidth={isActive ? (isMobile ? "1.0" : "0.4") : (isMobile ? "0.2" : "0.1")}
+                  opacity={isActive ? "0.6" : "0.1"}
                   className="transition-all duration-700"
                 />
                 {isActive && (
                   <line
                     x1={nodeA.x} y1={nodeA.y} x2={nodeB.x} y2={nodeB.y}
                     stroke="var(--color-maxxit-green)"
-                    strokeWidth="0.8"
+                    strokeWidth={isMobile ? "1.8" : "0.8"}
                     opacity="0.3"
-                    strokeDasharray="2, 5"
+                    strokeDasharray="2, 4"
                     className="animate-[dash-flow_1s_linear_infinite]"
                   />
                 )}
@@ -253,15 +290,15 @@ export default function CopyTradingVisual() {
           })}
 
           {pings.map((ping) => {
-            const from = NODES.find((n) => n.id === ping.from)!;
-            const to = NODES.find((n) => n.id === ping.to)!;
+            const from = getLayoutCoords(ping.from);
+            const to = getLayoutCoords(ping.to);
             const isEnergy = ping.type === "energy";
             return (
-              <circle key={ping.id} r={isEnergy ? "0.6" : "0.3"} fill={isEnergy ? "#fff" : "var(--color-maxxit-green)"}>
+              <circle key={ping.id} r={isEnergy ? (isMobile ? "1.4" : "0.6") : (isMobile ? "0.6" : "0.3")} fill={isEnergy ? "#fff" : "var(--color-maxxit-green)"}>
                 <animate attributeName="cx" from={from.x} to={to.x} dur={isEnergy ? "0.8s" : "1.8s"} repeatCount="1" />
                 <animate attributeName="cy" from={from.y} to={to.y} dur={isEnergy ? "0.8s" : "1.8s"} repeatCount="1" />
                 <animate attributeName="opacity" values="0;1;1;0" dur={isEnergy ? "0.8s" : "1.8s"} repeatCount="1" />
-                {isEnergy && <animate attributeName="r" values="0.2;1.2;0.2" dur="0.8s" repeatCount="1" />}
+                {isEnergy && <animate attributeName="r" values={isMobile ? "0.8;2.5;0.8" : "0.2;1.2;0.2"} dur="0.8s" repeatCount="1" />}
               </circle>
             );
           })}
@@ -273,67 +310,54 @@ export default function CopyTradingVisual() {
             const nodeInfo = nodeStates[node.id] || { state: "idle" as NodeState, label: "" };
             const isProducer = node.type === "producer";
             const isActive = nodeInfo.state !== "idle";
+            const coords = getLayoutCoords(node.id);
 
-            const isBottomNode = node.id === 3 || node.id === 4;
+            // Positioning logic for labels on mobile
+            const isLeft = coords.x < 50;
 
             return (
               <div
                 key={node.id}
-                className={`absolute transform -translate-x-1/2 -translate-y-1/2 flex ${isBottomNode ? 'flex-col-reverse' : 'flex-col'} items-center transition-all duration-700 ${isActive ? 'z-30' : 'z-20'}`}
-                style={{ left: `${node.x}%`, top: `${node.y}%` }}
+                className={`absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center transition-all duration-700 ${isActive ? 'z-40' : 'z-20'}`}
+                style={{ left: `${coords.x}%`, top: `${coords.y}%` }}
               >
                 {nodeInfo.label && (
                   <div
-                    className={`${isBottomNode ? 'mt-4' : 'mb-4'} px-3 py-1.5 rounded-lg border text-[9px] font-mono font-bold uppercase tracking-wider backdrop-blur-xl shadow-2xl max-w-[220px] text-left leading-relaxed ${nodeInfo.state === "rejected"
-                      ? "border-[var(--color-loss-red)] bg-red-950/30 text-[var(--color-loss-red)]"
+                    className={`absolute ${isProducer ? '-top-20' : 'top-12'} ${isMobile ? (isLeft ? 'left-6' : '-left-28') : ''} px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[7px] sm:text-[9px] font-mono font-bold uppercase tracking-widest backdrop-blur-xl shadow-2xl min-w-[100px] max-w-[120px] sm:max-w-[220px] text-left leading-relaxed ${nodeInfo.state === "rejected"
+                      ? "border-[var(--color-loss-red)] bg-red-950/50 text-[var(--color-loss-red)]"
                       : nodeInfo.state === "processing"
-                        ? "border-[var(--color-openclaw-accent)] bg-amber-950/30 text-[var(--color-openclaw-accent)] shadow-[0_0_30px_rgba(255,191,0,0.1)]"
-                        : "border-(--color-maxxit-green) bg-emerald-950/30 text-(--color-maxxit-green) shadow-[0_0_40px_rgba(0,255,136,0.15)]"
+                        ? "border-[var(--color-openclaw-accent)] bg-amber-950/50 text-[var(--color-openclaw-accent)] shadow-[0_0_30px_rgba(255,191,0,0.1)]"
+                        : "border-(--color-maxxit-green) bg-emerald-950/50 text-(--color-maxxit-green) shadow-[0_0_40px_rgba(0,255,136,0.15)]"
                       }`}
                     style={{ animation: "message-appear 0.5s cubic-bezier(0.16, 1, 0.3, 1)" }}
                   >
-                    <div className="flex items-center gap-2 mb-1 opacity-50 text-[7px]">
-                      <span className="w-1.5 h-1.5 bg-current rounded-full animate-pulse" />
-                      STATUS: {nodeInfo.state}
+                    <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1 opacity-50 text-[6px] sm:text-[7px]">
+                      <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-current rounded-full animate-pulse" />
+                      {nodeInfo.state}
                     </div>
                     {nodeInfo.label}
-                    {nodeInfo.state === "processing" && (
-                      <div className="mt-2 h-0.5 bg-white/10 rounded-full overflow-hidden">
-                        <div className="h-full bg-current w-full animate-[loading-bar_1.2s_ease-in-out_infinite]" />
-                      </div>
-                    )}
                   </div>
                 )}
 
-                <div className={`relative transition-transform duration-500 ${isActive ? 'scale-110' : 'scale-100 hover:scale-105'} group/node`}>
-                  <div className={`absolute -inset-6 rounded-full opacity-0 group-hover/node:opacity-5 transition-opacity duration-300 border border-white pointer-events-none`} />
+                <div className={`relative transition-transform duration-500 ${isActive ? 'scale-110' : 'scale-75 hover:scale-90'} group/node`}>
+                  <div className={`absolute -inset-4 sm:-inset-6 rounded-full opacity-0 group-hover/node:opacity-5 transition-opacity duration-300 border border-white pointer-events-none`} />
 
                   <LobsterSVG
                     color={nodeInfo.state === "active" ? "var(--color-maxxit-green)" : "var(--color-text-muted)"}
                     isActive={isActive}
                     state={nodeInfo.state}
-                    size={isProducer ? 85 : 65}
-                    className={isActive ? 'animate-[float_4s_ease-in-out_infinite]' : ''}
+                    size={isMobile ? (isProducer ? 65 : 48) : (isProducer ? 85 : 65)}
+                    className={isActive ? 'animate-[float_4s_ease-in-out_infinite]' : 'opacity-20'}
                   />
 
                   {nodeInfo.state === "active" && (
                     <div className="absolute inset-0 rounded-full border border-[var(--color-maxxit-green)] animate-ping opacity-20 pointer-events-none scale-150" />
                   )}
-
-                  {/* Floating Metadata */}
-                  {isActive && (
-                    <div className="absolute -right-16 top-0 text-[7px] font-mono text-white/20 whitespace-nowrap hidden lg:block select-none pointer-events-none">
-                      <div>UID: {node.id.toString().padStart(4, '0')}</div>
-                      <div>LAT: {Math.floor(Math.random() * 20) + 1}MS</div>
-                      <div>ST: ACTIVE</div>
-                    </div>
-                  )}
                 </div>
 
-                <div className={`${isBottomNode ? 'mb-4' : 'mt-4'} text-[10px] font-mono font-bold tracking-[0.2em] transition-all duration-500 flex flex-col items-center gap-1 ${isActive ? "text-(--color-maxxit-green)" : "text-[var(--color-text-muted)] opacity-50"
+                <div className={`mt-2 text-[6px] sm:text-[9px] font-mono font-bold tracking-widest transition-all duration-500 flex flex-col items-center gap-0.5 ${isActive ? "text-(--color-maxxit-green)" : "text-[var(--color-text-muted)] opacity-20"
                   }`}>
-                  <span className="bg-white/5 px-2 py-0.5 rounded border border-white/5">[{node.name}]</span>
-                  <span className="text-[7px] opacity-40 font-normal">{node.role}</span>
+                  <span className="bg-white/5 px-1 sm:px-2 py-0.5 rounded border border-white/5 whitespace-nowrap">[{isMobile ? node.name.split('_')[0] : node.name}]</span>
                 </div>
               </div>
             );
@@ -342,12 +366,12 @@ export default function CopyTradingVisual() {
 
         {/* Outcome Banner */}
         {outcomeText && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-40 px-6 py-3 rounded-xl border border-(--color-maxxit-green) bg-black/90 backdrop-blur-3xl shadow-[0_0_40px_rgba(0,255,136,0.15)]" style={{ animation: "message-appear 0.6s cubic-bezier(0.16, 1, 0.3, 1)" }}>
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-(--color-maxxit-green)/20 flex items-center justify-center text-sm">📈</div>
-              <div className="flex flex-col">
-                <span className="text-[8px] font-mono text-(--color-maxxit-green) opacity-50 uppercase tracking-widest">Report_Summary.bin</span>
-                <span className="text-xs font-mono font-bold uppercase tracking-widest text-(--color-maxxit-green)">
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 sm:px-6 py-2 sm:py-3 rounded-xl border border-(--color-maxxit-green) bg-black/95 backdrop-blur-3xl shadow-[0_0_40px_rgba(0,255,136,0.15)] flex flex-col items-center min-w-[240px] xs:min-w-[280px] sm:min-w-[400px] max-w-[90vw]" style={{ animation: "message-appear 0.6s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+            <div className="flex items-center gap-2 sm:gap-3 w-full">
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-(--color-maxxit-green)/20 flex items-center justify-center text-xs sm:text-sm">📈</div>
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <span className="text-[6px] sm:text-[8px] font-mono text-(--color-maxxit-green) opacity-50 uppercase tracking-widest">Report_Summary</span>
+                <span className="text-[9px] sm:text-xs font-mono font-bold uppercase tracking-widest text-(--color-maxxit-green) wrap-break-word">
                   {outcomeText}
                 </span>
               </div>
@@ -355,60 +379,62 @@ export default function CopyTradingVisual() {
           </div>
         )}
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none opacity-[0.02] select-none">
-          <h2 className="text-[140px] font-black text-white leading-none font-display tracking-widest">NETWORK_SIM</h2>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none opacity-[0.015] sm:opacity-[0.02] select-none">
+          <h2 className="text-[50px] sm:text-[100px] md:text-[140px] font-black text-white leading-none font-display tracking-widest whitespace-nowrap">NETWORK_SIM</h2>
         </div>
       </div>
 
       {/* ── ALPHA FEED TERMINAL ── */}
       <div className="w-full rounded-b-3xl overflow-hidden border border-t-0 border-[var(--color-border)] bg-[#0a0a09]">
-        <div className="h-10 border-b border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-between px-6">
-          <div className="flex items-center gap-4">
-            <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500/30" />
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-500/30" />
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/30" />
+        <div className="h-10 border-b border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex gap-1 sm:gap-1.5">
+              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-red-500/30" />
+              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500/30" />
+              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500/30" />
             </div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--color-text-muted)] font-bold">
-              SYSTEM_REALTIME_FEED <span className="opacity-20">//</span> AGENT_INTERACTIONS
+            <span className="text-[10px] sm:text-[12px] font-mono uppercase tracking-widest text-[var(--color-text-muted)] font-bold truncate max-w-[120px] sm:max-w-none">
+              FEED <span className="opacity-20 hidden sm:inline">//</span> <span className="hidden sm:inline">AGENT_INTERACTIONS</span>
             </span>
           </div>
-          <div className="flex items-center gap-6">
-            <span className="text-[8px] font-mono text-[var(--color-text-muted)] opacity-50 uppercase tracking-widest hidden sm:block">
+          <div className="flex items-center gap-3 sm:gap-6">
+            <span className="text-[10px] sm:text-[12px] font-mono text-[var(--color-text-muted)] opacity-50 uppercase tracking-widest hidden xs:block">
               LOGS: {chatMessages.length.toString().padStart(4, '0')}
             </span>
-            <div className="h-4 w-px bg-white/10" />
-            <span className="text-[8px] font-mono text-[var(--color-maxxit-green)] animate-pulse">LIVE_SYNC</span>
+            <div className="h-4 w-px bg-white/10 hidden sm:block" />
+            <span className="text-[10px] sm:text-[12px] font-mono text-[var(--color-maxxit-green)] animate-pulse whitespace-nowrap">LIVE_SYNC</span>
           </div>
         </div>
 
-        <div className="p-6 font-mono min-h-[220px] max-h-[220px] overflow-hidden bg-[radial-gradient(circle_at_0%_0%,rgba(0,255,136,0.02)_0%,transparent_50%)]">
-          <div className="space-y-2">
+        <div ref={scrollRef} className="p-3 sm:p-6 font-mono min-h-[180px] sm:min-h-[220px] max-h-[180px] sm:max-h-[220px] overflow-y-auto bg-[radial-gradient(circle_at_0%_0%,rgba(0,255,136,0.02)_0%,transparent_50%)] scrollbar-hide">
+          <div className="space-y-2 sm:space-y-2.5">
             {chatMessages.map((msg) => (
-              <div key={msg.id} className="text-[10px] leading-relaxed flex items-start gap-3 group/msg" style={{ animation: "message-appear 0.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>
-                <span className="text-white/10 shrink-0 select-none group-hover/msg:text-(--color-maxxit-green) transition-colors">[{new Date(msg.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <span className={`px-1.5 py-0.5 rounded-[3px] text-[8px] border ${msg.type === "signal" ? "border-amber-500/20 text-amber-500 bg-amber-500/5" :
-                    msg.type === "verify" ? "border-(--color-maxxit-green)/20 text-(--color-maxxit-green) bg-(--color-maxxit-green)/5" :
-                      msg.type === "purchase" ? "border-blue-500/20 text-blue-400 bg-blue-500/5" :
-                        msg.type === "reject" ? "border-red-500/20 text-red-500 bg-red-500/5" :
-                          "border-white/10 text-white bg-white/5"
-                    }`}>
-                    {msg.from}
-                  </span>
-                  <span className="text-white/20">→</span>
-                  <span className="text-white/40">{msg.to}</span>
+              <div key={msg.id} className="text-[10px] sm:text-[13px] leading-relaxed flex flex-col sm:flex-row items-start gap-1 sm:gap-3 group/msg" style={{ animation: "message-appear 0.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-white/10 select-none group-hover/msg:text-(--color-maxxit-green) transition-colors hidden sm:inline">[{new Date(msg.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span>
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <span className={`px-1 sm:px-1.5 py-0.5 rounded-[3px] text-[8px] sm:text-[9px] border ${msg.type === "signal" ? "border-amber-500/20 text-amber-500 bg-amber-500/5" :
+                      msg.type === "verify" ? "border-(--color-maxxit-green)/20 text-(--color-maxxit-green) bg-(--color-maxxit-green)/5" :
+                        msg.type === "purchase" ? "border-blue-500/20 text-blue-400 bg-blue-500/5" :
+                          msg.type === "reject" ? "border-red-500/20 text-red-500 bg-red-500/5" :
+                            "border-white/10 text-white bg-white/5"
+                      }`}>
+                      {msg.from}
+                    </span>
+                    <span className="text-white/20">→</span>
+                    <span className="text-white/30 sm:text-white/40">{msg.to}</span>
+                  </div>
                 </div>
-                <span className={`font-light ${msg.type === "outcome" ? "text-[var(--color-maxxit-green)] font-bold" : "text-white/80"}`}>
+                <span className={`font-light wrap-break-word w-full sm:w-auto ${msg.type === "outcome" ? "text-[var(--color-maxxit-green)] font-bold" : "text-white/80"}`}>
                   &quot;{msg.content}&quot;
                 </span>
               </div>
             ))}
             {chatMessages.length === 0 && (
-              <div className="text-[10px] font-mono text-[var(--color-text-muted)] opacity-50 italic">
+              <div className="text-[10px] sm:text-[13px] font-mono text-[var(--color-text-muted)] opacity-50 italic">
                 <span className="text-[var(--color-maxxit-green)] mr-2">&gt;</span>
                 SYNCHRONIZING_MESH_PROTOCOLS...
-                <span className="inline-block w-2 h-4 bg-[var(--color-maxxit-green)] opacity-60 ml-2 align-middle" style={{ animation: "typing-cursor 0.8s step-end infinite" }} />
+                <span className="inline-block w-2 h-3 sm:h-4 bg-[var(--color-maxxit-green)] opacity-60 ml-2 align-middle" style={{ animation: "typing-cursor 0.8s step-end infinite" }} />
               </div>
             )}
           </div>

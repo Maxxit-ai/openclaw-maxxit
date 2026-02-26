@@ -55,22 +55,22 @@ const FEATURES = [
 
 export default function AlphaFeatureGrid() {
   return (
-    <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-1 sm:px-0">
       {FEATURES.map((feature, i) => (
         <div
           key={i}
-          className="glass rounded-2xl p-8 relative overflow-hidden group hover:border-[var(--color-border-glow)] transition-all duration-300"
+          className="glass rounded-2xl p-6 sm:p-8 relative overflow-hidden group hover:border-[var(--color-border-glow)] transition-all duration-300"
         >
-          <div className="w-14 h-14 rounded-xl bg-[rgba(0,255,136,0.06)] border border-[rgba(0,255,136,0.12)] flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(0,255,136,0.1)] transition-shadow">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-[rgba(0,255,136,0.06)] border border-[rgba(0,255,136,0.12)] flex items-center justify-center mb-5 sm:mb-6 group-hover:shadow-[0_0_20px_rgba(0,255,136,0.1)] transition-shadow">
             {feature.icon}
           </div>
           <h3
-            className="text-lg font-bold mb-3 text-[var(--color-text-primary)]"
+            className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-[var(--color-text-primary)]"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             {feature.title}
           </h3>
-          <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
+          <p className="text-[13px] sm:text-sm text-[var(--color-text-secondary)] leading-relaxed">
             {feature.description}
           </p>
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--color-maxxit-green)] to-transparent opacity-0 group-hover:opacity-30 transition-opacity" />

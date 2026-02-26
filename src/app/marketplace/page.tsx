@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import MarketplaceHeader from "@/components/MarketplaceHeader";
-import ProducerCard from "@/components/ProducerCard";
-import AlphaListingCard from "@/components/AlphaListingCard";
-import ListingDetailModal from "@/components/ListingDetailModal";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import MarketplaceTabs from "@/components/marketplace/MarketplaceTabs";
+import ProducerCard from "@/components/cards/ProducerCard";
+import AlphaListingCard from "@/components/cards/AlphaListingCard";
+import ListingDetailModal from "@/components/marketplace/ListingDetailModal";
 import { fetchAgents, fetchListings, purchaseAlpha } from "@/lib/api";
 import type { AlphaAgent, AlphaListing, AlphaContent } from "@/lib/mockData";
 
@@ -58,7 +60,7 @@ export default function MarketplacePage() {
   return (
     <div className="relative min-h-screen bg-background overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-(--color-maxxit-green)/5 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-(--color-maxxit-green)/3 rounded-full blur-[120px]" />
         <div
@@ -67,24 +69,19 @@ export default function MarketplacePage() {
             backgroundImage: `linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)`,
             backgroundSize: '40px 40px'
           }}
-        />
+        /> */}
         {/* Subtle Noise Texture */}
         <div className="absolute inset-0 opacity-[0.02] mix-blend-overlay" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
-      </div>
+      {/* </div> */}
 
       <div className="relative z-10 pt-16">
-        <MarketplaceHeader
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          agentCount={agents.length}
-          listingCount={listings.length}
-        />
+        <Header />
 
         {/* Subheader */}
         <div className="border-b border-border bg-background/50 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 text-center">
             <h1
-              className="text-4xl sm:text-6xl font-bold text-text-primary mb-5 tracking-tight"
+              className="text-3xl sm:text-6xl font-bold text-text-primary mb-4 sm:mb-5 tracking-tight"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               {activeTab === "agents" ? (
@@ -93,7 +90,7 @@ export default function MarketplacePage() {
                 <>Alpha <span className="gradient-text">Signals</span></>
               )}
             </h1>
-            <p className="text-sm sm:text-base text-text-muted mt-1 font-mono max-w-2xl mx-auto leading-relaxed border-x border-border/30 px-8">
+            <p className="text-xs sm:text-base text-text-muted mt-1 font-mono max-w-2xl mx-auto leading-relaxed border-x-0 sm:border-x border-border/30 px-4 sm:px-8">
               {activeTab === "agents"
                 ? "Browse AI agents with cryptographically proven trading performance on Ostium perpetuals."
                 : commitmentFilter
@@ -101,28 +98,36 @@ export default function MarketplacePage() {
                   : "Real-time trading alpha from verified agents. Secure, trustless, and privacy-preserving."}
             </p>
 
-            <div className="flex items-center justify-center gap-4 mt-10">
-              {commitmentFilter && (
-                <button
-                  onClick={clearFilter}
-                  className="text-[10px] font-mono px-4 py-2 rounded-lg border border-border text-text-muted hover:text-text-primary hover:border-(--color-maxxit-green) transition-all bg-surface"
-                >
-                  CLEAR_FILTER [×]
-                </button>
-              )}
-              <div className="text-[10px] font-mono text-(--color-maxxit-green) bg-(--color-maxxit-green)/5 px-5 py-2.5 rounded-xl border border-(--color-maxxit-green)/10 shadow-[0_0_20px_rgba(0,255,136,0.05)]">
-                {loading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-(--color-maxxit-green) animate-ping" />
-                    <span>SYNCHRONIZING_STREAM...</span>
-                  </div>
-                ) : (
-                  <>
-                    {activeTab === "agents"
-                      ? `${agents.length} VERIFIED AGENTS ON-CHAIN`
-                      : `${listings.length} ACTIVE SIGNALS DETECTED`}
-                  </>
+            <div className="flex flex-col items-center justify-center gap-6 mt-8 sm:mt-10 px-2">
+              <MarketplaceTabs
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                agentCount={agents.length}
+                listingCount={listings.length}
+              />
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                {commitmentFilter && (
+                  <button
+                    onClick={clearFilter}
+                    className="text-[9px] sm:text-[10px] font-mono px-3 sm:px-4 py-2 rounded-lg border border-border text-text-muted hover:text-text-primary hover:border-(--color-maxxit-green) transition-all bg-surface"
+                  >
+                    CLEAR_FILTER [×]
+                  </button>
                 )}
+                <div className="text-[9px] sm:text-[10px] font-mono text-(--color-maxxit-green) bg-(--color-maxxit-green)/5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-(--color-maxxit-green)/10 shadow-[0_0_20px_rgba(0,255,136,0.05)]">
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-(--color-maxxit-green) animate-ping" />
+                      <span>SYNCHRONIZING_STREAM...</span>
+                    </div>
+                  ) : (
+                    <>
+                      {activeTab === "agents"
+                        ? `${agents.length} VERIFIED AGENTS ON-CHAIN`
+                        : `${listings.length} ACTIVE SIGNALS DETECTED`}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -190,7 +195,7 @@ export default function MarketplacePage() {
               <div className="h-0.5 w-12 bg-(--color-maxxit-green) mx-auto opacity-50" />
             </div>
 
-            <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
               {[
                 {
                   step: "01",
@@ -217,9 +222,9 @@ export default function MarketplacePage() {
                   icon: "M13 10V3L4 14h7v7l9-11h-7z"
                 },
               ].map((item, i) => (
-                <div key={i} className="group p-8 rounded-2xl border border-border bg-background/20 hover:border-(--color-maxxit-green)/30 hover:bg-(--color-maxxit-green)/5 transition-all duration-700 shadow-sm hover:shadow-[0_0_30px_-10px_rgba(0,255,136,0.1)]">
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="text-[11px] font-mono font-bold text-(--color-maxxit-green)/40 group-hover:text-(--color-maxxit-green) transition-colors duration-500">
+                <div key={i} className="group p-6 sm:p-8 rounded-2xl border border-border bg-background/20 hover:border-(--color-maxxit-green)/30 hover:bg-(--color-maxxit-green)/5 transition-all duration-700 shadow-sm hover:shadow-[0_0_30px_-10px_rgba(0,255,136,0.1)]">
+                  <div className="flex items-center gap-4 mb-5 sm:mb-6">
+                    <span className="text-[10px] sm:text-[11px] font-mono font-bold text-(--color-maxxit-green)/40 group-hover:text-(--color-maxxit-green) transition-colors duration-500">
                       {item.step}
                     </span>
                     <div className="h-px grow bg-border group-hover:bg-(--color-maxxit-green)/20 transition-colors duration-500" />
@@ -230,12 +235,12 @@ export default function MarketplacePage() {
                     </div>
                   </div>
                   <div
-                    className="text-sm font-bold text-text-primary mb-3 tracking-widest group-hover:text-(--color-maxxit-green) transition-colors duration-500"
+                    className="text-xs sm:text-sm font-bold text-text-primary mb-3 tracking-widest group-hover:text-(--color-maxxit-green) transition-colors duration-500"
                     style={{ fontFamily: "var(--font-heading)" }}
                   >
                     {item.title}
                   </div>
-                  <div className="text-[11px] text-text-muted leading-relaxed group-hover:text-text-secondary transition-colors duration-500">
+                  <div className="text-[10px] sm:text-[11px] text-text-muted leading-relaxed group-hover:text-text-secondary transition-colors duration-500">
                     {item.desc}
                   </div>
                 </div>
@@ -245,22 +250,7 @@ export default function MarketplacePage() {
         </div>
 
         {/* Footer */}
-        <footer className="py-16 px-4 text-center border-t border-border bg-background">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="w-1.5 h-1.5 rounded-full bg-(--color-maxxit-green) shadow-[0_0_8px_rgba(0,255,136,0.5)]" />
-              <span className="text-xs font-mono font-bold uppercase tracking-[0.3em] text-text-primary">
-                Maxxit Discovery Network
-              </span>
-              <div className="w-1.5 h-1.5 rounded-full bg-(--color-maxxit-green) shadow-[0_0_8px_rgba(0,255,136,0.5)]" />
-            </div>
-            <p className="text-[10px] text-text-muted font-mono max-w-2xl mx-auto leading-loose opacity-60">
-              DEPLOYED ON ARBITRUM SEPOLIA TESTNET · PROTOCOL v0.4.2-ALPHA ·
-              SECURED BY ZERO-KNOWLEDGE PROOFS · PRIVACY-FIRST SIGNAL TRANSMISSION ·
-              x402 COMPLIANT PAYMENTS · NON-CUSTODIAL AGENT ARCHITECTURE
-            </p>
-          </div>
-        </footer>
+        <Footer />
 
         {/* Modal */}
         {selectedListing && (

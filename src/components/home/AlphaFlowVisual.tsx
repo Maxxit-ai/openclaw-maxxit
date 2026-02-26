@@ -56,19 +56,17 @@ export default function AlphaFlowVisual() {
             {STEPS.map((_, i) => (
               <div key={i} className="flex-1 flex items-center">
                 <div
-                  className={`h-1 w-full rounded-full transition-all duration-500 ${
-                    i <= activeStep
+                  className={`h-1 w-full rounded-full transition-all duration-500 ${i <= activeStep
                       ? "bg-[var(--color-maxxit-green)] shadow-[0_0_8px_rgba(0,255,136,0.3)]"
                       : "bg-[var(--color-border)]"
-                  }`}
+                    }`}
                 />
                 {i < STEPS.length - 1 && (
                   <div
-                    className={`w-1.5 h-1.5 rounded-full shrink-0 mx-0.5 transition-all duration-500 ${
-                      i < activeStep
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 mx-0.5 transition-all duration-500 ${i < activeStep
                         ? "bg-[var(--color-maxxit-green)]"
                         : "bg-[var(--color-border)]"
-                    }`}
+                      }`}
                   />
                 )}
               </div>
@@ -76,7 +74,7 @@ export default function AlphaFlowVisual() {
           </div>
 
           {/* Steps Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-3 gap-3">
             {STEPS.map((step, i) => (
               <button
                 key={i}
@@ -84,21 +82,19 @@ export default function AlphaFlowVisual() {
                   setActiveStep(i);
                   setIsAnimating(false);
                 }}
-                className={`text-left p-4 rounded-lg border transition-all duration-300 cursor-pointer ${
-                  i === activeStep
+                className={`text-left p-4 rounded-lg border transition-all duration-300 cursor-pointer ${i === activeStep
                     ? "border-[var(--color-maxxit-green)] bg-[rgba(0,255,136,0.04)] shadow-[0_0_20px_rgba(0,255,136,0.06)]"
                     : i < activeStep
-                    ? "border-[rgba(0,255,136,0.2)] bg-[rgba(0,255,136,0.02)]"
-                    : "border-[var(--color-border)] bg-transparent hover:border-[rgba(0,255,136,0.15)]"
-                }`}
+                      ? "border-[rgba(0,255,136,0.2)] bg-[rgba(0,255,136,0.02)]"
+                      : "border-[var(--color-border)] bg-transparent hover:border-[rgba(0,255,136,0.15)]"
+                  }`}
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span
-                    className={`font-mono text-xs font-bold ${
-                      i <= activeStep
+                    className={`font-mono text-xs font-bold ${i <= activeStep
                         ? "text-[var(--color-maxxit-green)]"
                         : "text-[var(--color-text-muted)]"
-                    }`}
+                      }`}
                   >
                     {step.icon}
                   </span>
@@ -107,21 +103,19 @@ export default function AlphaFlowVisual() {
                   </span>
                 </div>
                 <div
-                  className={`text-xs font-bold mb-1 ${
-                    i === activeStep
+                  className={`text-[11px] sm:text-xs font-bold mb-1 ${i === activeStep
                       ? "text-[var(--color-text-primary)]"
                       : "text-[var(--color-text-secondary)]"
-                  }`}
+                    }`}
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
                   {step.label}
                 </div>
                 <div
-                  className={`text-[10px] font-mono transition-all duration-300 ${
-                    i === activeStep
+                  className={`text-[9.5px] sm:text-[10px] font-mono transition-all duration-300 ${i === activeStep
                       ? "text-[var(--color-maxxit-green)] opacity-100"
                       : "text-[var(--color-text-muted)] opacity-60"
-                  }`}
+                    }`}
                 >
                   {step.detail}
                 </div>
@@ -131,11 +125,11 @@ export default function AlphaFlowVisual() {
 
           {/* Active Step Detail */}
           <div className="mt-6 p-4 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] font-mono">
-            <div className="flex items-center gap-2 text-[10px] text-[var(--color-text-muted)] mb-2">
+            <div className="flex items-center gap-2 text-[10px] text-[var(--color-text-muted)] mb-3">
               <span className="w-1 h-1 rounded-full bg-[var(--color-maxxit-green)] animate-pulse" />
               ACTIVE_STEP: {activeStep + 1}/{STEPS.length}
             </div>
-            <div className="text-xs text-[var(--color-maxxit-green)]">
+            <div className="text-[10px] sm:text-xs text-[var(--color-maxxit-green)] break-words leading-relaxed">
               <span className="text-[var(--color-text-muted)] opacity-40 mr-2">$</span>
               {activeStep === 0 && "your_producer_agent.open_position(BTC, LONG, 15x, 250_USDC)"}
               {activeStep === 1 && "your_producer_agent.generate_proof() → Brevis verifies on-chain"}
