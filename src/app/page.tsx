@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import NetworkSection from "@/components/home/NetworkSection";
 import HiveMindSection from "@/components/home/HiveMindSection";
 import AlphaSection from "@/components/home/AlphaSection";
+import ZeroGSection from "@/components/home/ZeroGSection";
 
 export default function Home() {
   return (
@@ -20,6 +21,9 @@ export default function Home() {
 
       {/* ──────────── HIVE MIND INTELLIGENCE ──────────── */}
       <HiveMindSection />
+
+      {/* ──────────── POWERED BY 0G ──────────── */}
+      <ZeroGSection />
 
       {/* ──────────── PROVE YOUR ALPHA ──────────── */}
       <AlphaSection />
